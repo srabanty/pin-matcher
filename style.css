@@ -107,3 +107,7 @@ color: #E0B612;
 #errorMessage,#successMessage{
 display: none;
 }
+button[disabled]{
+    background-color:grey;
+    color: #fff;
+  }

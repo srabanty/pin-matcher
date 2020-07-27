@@ -12,47 +12,123 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input class="form-control" id="randomNum" type="text">
+                    <button class="generate-btn" id="randomNumGenerator">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input class="form-control" id="calculatorText" type="text">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                              <div class="button number" id="7">7</div>
+                              <div class="button number" id="8">8</div>
+                              <div class="button number" id="9">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                              <div class="button number" id="4">4</div>
+                              <div class="button number" id="5">5</div>
+                              <div class="button number" id="6">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                              <div class="button number" id="1">1</div>
+                              <div class="button number" id="2">2</div>
+                              <div class="button number" id="3">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button"><</div>
-                                <div class="button">0</div>
-                                <div class="button">C</div>
+                                <div class="button" id="backspace"><</div>
+                                <div class="button number" id="0">0</div>
+                                <div class="button" id="clear">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button type="submit" class="submit-btn" id="submit">Submit</button>
+                                <p class="action-left" id="leftAction">3 try left</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p class="notify" id="errorMessage">❌ Pin Didn't Match, Please try again</p>
+            <p class="notify" id="successMessage">✅ Pin Matched... Secret door is opening for you</p>
         </div>
     </div>
+    <script>
+        //Random Number Generate and show
+        const randomNumGenerator = document.getElementById("randomNumGenerator");
+        randomNumGenerator.addEventListener("click",function(){
+            let randomValue = Math.floor(Math.random() * 9000) + 1000;
+            document.getElementById("randomNum").value = randomValue;
+            document.getElementById("submit").disabled = false;
+            document.getElementById("leftAction").innerText = "3 try left";
+            document.getElementById("successMessage").style.display = "none";
+            document.getElementById("errorMessage").style.display = "none";
+
+        });
+
+        // showing numbers on calculator Text
+        var number = document.getElementsByClassName("number");
+        for(var i = 0; i<number.length ;i++){
+            number[i].addEventListener('click',function(){
+                var calculatorText = document.getElementById("calculatorText").innerText;
+
+                if(calculatorText != NaN){
+                    var newCalculatorText = calculatorText + this.id;
+                    document.getElementById("calculatorText").value = document.getElementById("calculatorText").value + newCalculatorText;
+                }
+
+            });
+        }
+
+        // backspace button event handler
+        const backspace = document.getElementById("backspace");
+        backspace.addEventListener("click",function(){
+            var output = document.getElementById("calculatorText").value.toString();
+            if(output){ //if output has a value
+                output = output.substr(0,output.length-1);
+                document.getElementById("calculatorText").value = output;
+            }
+        })
+
+        // clear button event handler
+        const clear = document.getElementById("clear");
+        clear.addEventListener("click",function(){
+            document.getElementById("calculatorText").value = "";
+        })
+        
+        // Checking for pin match
+        var count = 0;
+        const submit = document.getElementById("submit");
+        submit.addEventListener("click",function(){
+            if(document.getElementById("randomNum").value == document.getElementById("calculatorText").value){
+                document.getElementById("successMessage").style.display = "block";
+                document.getElementById("errorMessage").style.display = "none";
+                document.getElementById("submit").disabled = true;
+                document.getElementById("randomNum").value ="";
+                document.getElementById("calculatorText").value = "";
+            }
+            else if(document.getElementById("randomNum").value != document.getElementById("calculatorText").value){
+                document.getElementById("errorMessage").style.display = "block";
+                count = count + 1;
+                //alert(count);
+                if(count == 1){
+                    document.getElementById("leftAction").innerText = "2 try left";
+                }
+                else if(count == 2){
+                    document.getElementById("leftAction").innerText = "1 try left";
+                }
+                else if(count == 3){
+                    document.getElementById("leftAction").innerText = "0 try left";
+                }
+                else if(count > 3){
+                    document.getElementById("randomNum").value ="";
+                    document.getElementById("calculatorText").value = "";
+                    document.getElementById("submit").disabled = true;
+                    count = 0;
+                }
+            }
+        })
+    </script>
 </body>
 </html>

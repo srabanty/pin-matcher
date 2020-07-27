@@ -55,12 +55,17 @@
         </div>
     </div>
     <script>
+        if(document.getElementById("randomNum").innerText ==""){
+                document.getElementById("submit").disabled = true;
+                document.getElementById("leftAction").innerText = "";
+        }
         //Random Number Generate and show
         const randomNumGenerator = document.getElementById("randomNumGenerator");
         randomNumGenerator.addEventListener("click",function(){
             let randomValue = Math.floor(Math.random() * 9000) + 1000;
             document.getElementById("randomNum").value = randomValue;
             document.getElementById("submit").disabled = false;
+            document.getElementById("calculatorText").value = "";
             document.getElementById("leftAction").innerText = "3 try left";
             document.getElementById("successMessage").style.display = "none";
             document.getElementById("errorMessage").style.display = "none";

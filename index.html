@@ -14,11 +14,12 @@
                 <div class="pin-generator half-width">
                     <input class="form-control" id="randomNum" type="text">
                     <button class="generate-btn" id="randomNumGenerator">Generate Pin</button>
+                    <h4 id="pinGeneratorText"><span>&#8593;</span><br>Please, Press The Button First<br> To Get Started</h4>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" id="calculatorText" type="text">
+                    <input class="form-control" placeholder="Your Pin" id="calculatorText" type="text">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
@@ -58,7 +59,9 @@
         if(document.getElementById("randomNum").innerText ==""){
                 document.getElementById("submit").disabled = true;
                 document.getElementById("leftAction").innerText = "";
+                document.getElementById("calculatorText").innerText = "";
         }
+        var calcTextCount = 0;
         //Random Number Generate and show
         const randomNumGenerator = document.getElementById("randomNumGenerator");
         randomNumGenerator.addEventListener("click",function(){
@@ -69,6 +72,8 @@
             document.getElementById("leftAction").innerText = "3 try left";
             document.getElementById("successMessage").style.display = "none";
             document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("pinGeneratorText").style.display = "none";
+            calcTextCount =  0;
 
         });
 
@@ -77,10 +82,14 @@
         for(var i = 0; i<number.length ;i++){
             number[i].addEventListener('click',function(){
                 var calculatorText = document.getElementById("calculatorText").innerText;
-
-                if(calculatorText != NaN){
+                
+                if(document.getElementById("randomNum").value == ""){
+                    calculatorText == "";
+                }
+                else if(calculatorText != NaN && calcTextCount <= 3){
                     var newCalculatorText = calculatorText + this.id;
                     document.getElementById("calculatorText").value = document.getElementById("calculatorText").value + newCalculatorText;
+                    calcTextCount++;
                 }
 
             });
@@ -93,6 +102,7 @@
             if(output){ //if output has a value
                 output = output.substr(0,output.length-1);
                 document.getElementById("calculatorText").value = output;
+                calcTextCount = calcTextCount - 1;
             }
         })
 
@@ -100,41 +110,52 @@
         const clear = document.getElementById("clear");
         clear.addEventListener("click",function(){
             document.getElementById("calculatorText").value = "";
+            calcTextCount = 0;
         })
         
         // Checking for pin match
-        var count = 0;
+        var wrongTryCount = 0;
         const submit = document.getElementById("submit");
         submit.addEventListener("click",function(){
-            if(document.getElementById("randomNum").value == document.getElementById("calculatorText").value){
+            if(document.getElementById("calculatorText").value == ""){
+                alert("Sorry !! Please Enter Your Pin First and then Submit !! ");
+            }
+            else if(document.getElementById("randomNum").value == document.getElementById("calculatorText").value){
                 document.getElementById("successMessage").style.display = "block";
                 document.getElementById("errorMessage").style.display = "none";
                 document.getElementById("submit").disabled = true;
                 document.getElementById("randomNum").value ="";
                 document.getElementById("calculatorText").value = "";
                 document.getElementById("leftAction").innerText = "";
+                document.getElementById("pinGeneratorText").style.display = "block";
+                calcTextCount = 0;
             }
             else if(document.getElementById("randomNum").value != document.getElementById("calculatorText").value){
                 document.getElementById("errorMessage").style.display = "block";
-                count = count + 1;
-                if(count == 1){
+                wrongTryCount = wrongTryCount + 1;
+                if(wrongTryCount == 1){
                     document.getElementById("leftAction").innerText = "2 try left";
                     document.getElementById("calculatorText").value = "";
+                    calcTextCount = 0;
                 }
-                else if(count == 2){
+                else if(wrongTryCount == 2){
                     document.getElementById("leftAction").innerText = "1 try left";
                     document.getElementById("calculatorText").value = "";
+                    calcTextCount = 0;
                 }
-                else if(count == 3){
+                else if(wrongTryCount == 3){
                     document.getElementById("leftAction").innerText = "0 try left";
                     document.getElementById("calculatorText").value = "";
+                    calcTextCount = 0;
                 }
-                else if(count > 3){
+                else if(wrongTryCount > 3){
                     document.getElementById("randomNum").value ="";
                     document.getElementById("calculatorText").value = "";
                     document.getElementById("submit").disabled = true;
                     document.getElementById("leftAction").innerText = "";
-                    count = 0;
+                    document.getElementById("pinGeneratorText").style.display = "block";
+                    wrongTryCount = 0;
+                    calcTextCount = 0;
                 }
             }
         })
